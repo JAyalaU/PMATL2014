@@ -1,0 +1,66 @@
+function [] = NR_G
+clc
+disp ( 'Newton Raphson Generalizado para el brazo robotico')
+
+x=input('ingrese la coordenada x que desea ');
+y=input('ingrese la coordenada y que desea ');
+z=input('ingrese la coordenada z que desea ');
+
+i=1;
+th=0.5;
+r= 1;
+B= 0.5;
+
+t= 0.1;
+
+h1=100;
+h2=100;
+h3=100;
+
+while (abs(h1)> t || abs(h2)> t || abs(h3)> t)
+
+    f1=r*cos(B)*cos(th)-x;
+    f2=r*cos(B)*sin(th)-y;
+    f3=-r*sin(B)-z;
+   
+
+ 
+    a= cos(B)*cos(th);
+ 
+    b= -sin(B)*cos(th)*r;
+ 
+    c=-r*cos(B)*sin(th);
+ 
+    d=cos(B)*sin(th);
+    
+    e=-sin(B)*sin(th)*r;
+    
+    f=r*cos(B)*cos(th);
+    
+    g=-sin(B);
+    
+    h=-cos(B)*r;
+    
+    
+    H= [a b c -f1;
+        d e f -f2;
+        g h 0 -f3];
+ 
+    R=rref (H);
+ 
+    h1=R(1,4);
+    h2=R(2,4);
+    h3=R(3,4);
+    
+    
+    B=h1+B;
+ 
+    r=h2+r;
+    
+    th=h3+th;
+    
+  disp ( [ B   r   th  h1   h2  h3   i]);
+    i=i+1;
+    
+end
+end 
