@@ -1,2 +1,2 @@
-PMATL2014
+Proyecto de métodos numéricos 2014
 =========
