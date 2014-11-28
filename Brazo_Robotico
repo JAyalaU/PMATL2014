@@ -1,76 +1,64 @@
 function [] = NR_G
 clc
-disp ( 'Newton Raphson Generalizado para el brazo robotico')
-
+disp ( 'Newton Raphson Generalizado para el brazo robotico');
 x=input('ingrese la coordenada x que desea ');
 y=input('ingrese la coordenada y que desea ');
 z=input('ingrese la coordenada z que desea ');
-
 i=1;
+
+Q=sqrt(x.^2+y.^2+z.^2);
+
 th=0.1;
 r= 0.1;
 B= 0.1;
-
 t= .1;
-
 h1=100;
 h2=100;
 h3=100;
-
 COND=true;
+while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
+f1=r*cos(B)*cos(th)-x;
+f2=r*cos(B)*sin(th)-y;
+f3=-r*sin(B)-z;
+a= -r*sin(th)*cos(B);
+b= -r*cos(th)*sin(B);
+c=cos(th)*cos(B);
+d=r*cos(th)*cos(B);
+e=-r*sin(th)*sin(B);
+f=sin(th)*cos(B);
+g=0;
+h=-r*cos(B);
+j=-sin(B);
+H= [a b c -f1;
+d e f -f2;
+g h j -f3];
+R=rref (H);
+h1=R(1,4);
+h2=R(2,4);
+h3=R(3,4);
+th=h1+th;
+B=h2+B;
+r=h3+r;
+disp ( [ th B r h1 h2 h3 i]);
+i=i+1;
 
-while (COND==true)
+X=r*cos(B)*cos(th);
+Y=r*cos(B)*sin(th);
+Z=-r*sin(B);
+clf;
 
-    f1=r*cos(B)*cos(th)-x;
-    f2=r*cos(B)*sin(th)-y;
-    f3=-r*sin(B)-z;
-  
+view(3);
+axis vis3d;
+xlim([-Q Q]);
+ylim([-Q Q]);
+zlim([-Q Q]);
+line([0,0],[0,0],[-1,0],'LineWidth',6);
+line([0,X],[0,Y],[0,Z],'LineWidth',6);
+grid on;
 
- 
-    a= -r*sin(th)*cos(B);
- 
-    b= -r*cos(th)*sin(B);
- 
-    c=cos(th)*cos(B);
- 
-    d=r*cos(th)*cos(B);
-   
-    e=-r*sin(th)*sin(B);
-   
-    f=sin(th)*cos(B);
-   
-    g=0;
-   
-    h=-r*cos(B);
-    
-    j=-sin(B);
-   
-   
-    H= [a b c -f1;
-        d e f -f2;
-        g h j -f3];
- 
-    R=rref (H);
- 
-    h1=R(1,4);
-    h2=R(2,4);
-    h3=R(3,4);
-   
-   
-    th=h1+th;
- 
-    B=h2+B;
-   
-    r=h3+r;
-   
-  disp ( [ th   B    r    h1   h2  h3   i]);
-    i=i+1;
-    
-    if (abs(h1)>t || abs(h2)>t || abs(h3)>t)
-        COND=true;
-    else
-        COND=false;
-    end
-   
+pause (1);
 end
+
+
+
 end 
