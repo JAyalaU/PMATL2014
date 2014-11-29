@@ -1,21 +1,26 @@
 function [] = NR_G
 clc
+COND=1;
+th=0;
+r= 1;
+B= 0;
+while(COND==1)
+
+clc 
+ 
 disp ( 'Newton Raphson Generalizado para el brazo robotico');
-x=input('ingrese la coordenada x que desea ');
-y=input('ingrese la coordenada y que desea ');
-z=input('ingrese la coordenada z que desea ');
+x=input('Ingrese la coordenada x que desea ');
+y=input('Ingrese la coordenada y que desea ');
+z=input('Ingrese la coordenada z que desea ');
 i=1;
 
 Q=sqrt(x.^2+y.^2+z.^2);
 
-th=0.1;
-r= 0.1;
-B= 0.1;
+
 t= .1;
 h1=100;
 h2=100;
 h3=100;
-COND=true;
 while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
 f1=r*cos(B)*cos(th)-x;
 f2=r*cos(B)*sin(th)-y;
@@ -42,23 +47,38 @@ r=h3+r;
 disp ( [ th B r h1 h2 h3 i]);
 i=i+1;
 
+end
+
+for p=1:100
 X=r*cos(B)*cos(th);
 Y=r*cos(B)*sin(th);
 Z=-r*sin(B);
 clf;
+
+X=X*(p/100);
+Y=Y*(p/100);
+Z=Z*(p/100);
 
 view(3);
 axis vis3d;
 xlim([-Q Q]);
 ylim([-Q Q]);
 zlim([-Q Q]);
-line([0,0],[0,0],[-1,0],'LineWidth',6);
-line([0,X],[0,Y],[0,Z],'LineWidth',6);
+line([0,0],[0,0],[-1,0],'LineWidth',6,'Color','r');
+line([0,X],[0,Y],[0,Z],'LineWidth',6,'Color','g');
 grid on;
 
-pause (1);
+pause(0.1);
+
 end
 
+disp('Ingrese 1 para ingresar otra posición ');
+COND=input('Ingrese un valor diferente de 1 para acabar el programa ');
+if(COND==0)
+    
+    break;
+end
 
+end
 
 end 
