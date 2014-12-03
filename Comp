@@ -1,0 +1,84 @@
+function[VAL] = Comp(x,y,z)
+
+    t= .1;
+    h1=100;
+    h2=100;
+    h3=100;
+    CON1=0;
+    CON2=0;
+    r=1;
+    B=0;
+    th=0;
+        
+    while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
+        f1=r*cos(B)*cos(th)-x;
+        f2=r*cos(B)*sin(th)-y;
+        f3=-r*sin(B)-z;
+        a= -r*sin(th)*cos(B);
+        b= -r*cos(th)*sin(B);
+        c=cos(th)*cos(B);
+        d=r*cos(th)*cos(B);
+        e=-r*sin(th)*sin(B);
+        f=sin(th)*cos(B);
+        g=0;
+        h=-r*cos(B);
+        j=-sin(B);
+        H= [a b c -f1;
+        d e f -f2;
+        g h j -f3];
+        R=rref (H);
+        h1=R(1,4);
+        h2=R(2,4);
+        h3=R(3,4);
+        th=h1+th;
+        B=h2+B;
+        r=h3+r;
+
+    end
+        
+    if(th>6.142185307 || th<-6.283185307)
+        if(th>6.283185307)
+            while(th>6.283185307)
+                th=th-6.283185307;
+            end
+        else
+            if(th<-6.283185307)
+                while(th<-6.283185307)
+                    th=th+6.283185307;
+                end
+            end
+        end
+    end
+    
+    if(B>6.283185307 || B<-6.283185307)
+        if(B>6.283185307)
+            while(B>6.283185307)
+                B=B-6.283185307;
+            end
+        else
+            if(B<-6.283185307)
+                while(B<-6.283185307)
+                    B=B+6.283185307;
+                end
+            end
+        end
+    end
+    
+    if(th<1.81514 && th>-1.81514)
+        CON1=1;
+    else
+        CON1=0;
+    end
+    
+    if(B<0.523599 && B>-0.453786)
+        CON2=1;
+    else
+        CON2=0;
+    end
+    
+    if(CON1==0 || CON2==0)
+       VAL=0;
+    else
+        VAL=1;
+    end
+end
