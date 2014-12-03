@@ -1,84 +1,146 @@
 function [] = NR_G
+
 clc
 COND=1;
 th=0;
-r= 1;
+r= 1.4573;
 B= 0;
+
 while(COND==1)
-
-clc 
+    clc
+    disp ( 'Newton Raphson Generalizado para el brazo robotico');
+    disp ( 'Radio máximo 173.355 centimetros');
+    disp ( 'Radio mínimo 118.110 centimetros');
+    x=input('Ingrese la coordenada X, en cm, que desea ');
+    y=input('Ingrese la coordenada Y, en cm, que desea ');
+    z=input('Ingrese la coordenada Z, en cm, que desea ');
+    disp(' ');
+    i=1;
+    Q=sqrt(x.^2+y.^2+z.^2);
+    t= .1;
+    h1=100;
+    h2=100;
+    h3=100;
+    thi=th;
+    Bi=B;
+    ri=r;
  
-disp ( 'Newton Raphson Generalizado para el brazo robotico');
-x=input('Ingrese la coordenada x que desea ');
-y=input('Ingrese la coordenada y que desea ');
-z=input('Ingrese la coordenada z que desea ');
-i=1;
-
-Q=sqrt(x.^2+y.^2+z.^2);
-
-
-t= .1;
-h1=100;
-h2=100;
-h3=100;
-while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
-f1=r*cos(B)*cos(th)-x;
-f2=r*cos(B)*sin(th)-y;
-f3=-r*sin(B)-z;
-a= -r*sin(th)*cos(B);
-b= -r*cos(th)*sin(B);
-c=cos(th)*cos(B);
-d=r*cos(th)*cos(B);
-e=-r*sin(th)*sin(B);
-f=sin(th)*cos(B);
-g=0;
-h=-r*cos(B);
-j=-sin(B);
-H= [a b c -f1;
-d e f -f2;
-g h j -f3];
-R=rref (H);
-h1=R(1,4);
-h2=R(2,4);
-h3=R(3,4);
-th=h1+th;
-B=h2+B;
-r=h3+r;
-disp ( [ th B r h1 h2 h3 i]);
-i=i+1;
-
-end
-
-for p=1:100
-X=r*cos(B)*cos(th);
-Y=r*cos(B)*sin(th);
-Z=-r*sin(B);
-clf;
-
-X=X*(p/100);
-Y=Y*(p/100);
-Z=Z*(p/100);
-
-view(3);
-axis vis3d;
-xlim([-Q Q]);
-ylim([-Q Q]);
-zlim([-Q Q]);
-line([0,0],[0,0],[-1,0],'LineWidth',6,'Color','r');
-line([0,X],[0,Y],[0,Z],'LineWidth',6,'Color','g');
-grid on;
-
-pause(0.1);
-
-end
-
-disp('Ingrese 1 para ingresar otra posición ');
-COND=input('Ingrese un valor diferente de 1 para acabar el programa ');
-if(COND==0)
+    while(Q>173.355 || Q<118.11 || Comp(x,y,z)==0)
+        disp(' ');
+        disp('Medida inválida');
+        disp(' ');
+        X = sprintf('El radio solicitado mide %f centimetros',Q);
+        disp(X);
+        disp(' ');
+        disp ( 'Radio máximo 173.355 centimetros');
+        disp ( 'Radio mínimo 118.110 centimetros');
+        disp(' ');
+        disp ( 'Theta máximo 104 grados' );
+        disp ( 'Theta mínimo -104 grados' );
+        disp ( 'Beta máximo 30 grados' );
+        disp ( 'Beta mínimo -26 grados' );
+        disp(' ');
+        x=input('Ingrese la coordenada X, en cm, que desea ');
+        y=input('Ingrese la coordenada Y, en cm, que desea ');
+        z=input('Ingrese la coordenada Z, en cm, que desea ');
+        Q=sqrt(x.^2+y.^2+z.^2);
+    end
     
-    break;
+    
+        
+    while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
+        f1=r*cos(B)*cos(th)-x;
+        f2=r*cos(B)*sin(th)-y;
+        f3=-r*sin(B)-z;
+        a= -r*sin(th)*cos(B);
+        b= -r*cos(th)*sin(B);
+        c=cos(th)*cos(B);
+        d=r*cos(th)*cos(B);
+        e=-r*sin(th)*sin(B);
+        f=sin(th)*cos(B);
+        g=0;
+        h=-r*cos(B);
+        j=-sin(B);
+        H= [a b c -f1;
+        d e f -f2;
+        g h j -f3];
+        R=rref (H);
+        h1=R(1,4);
+        h2=R(2,4);
+        h3=R(3,4);
+        th=h1+th;
+        B=h2+B;
+        r=h3+r;
+        disp ( [ th B r h1 h2 h3 i]);
+        i=i+1;
+    end
+        
+    
+    
+    if(th>6.142185307 || th<-6.283185307)
+        if(th>6.283185307)
+            while(th>6.283185307)
+                th=th-6.283185307;
+            end
+        else
+            if(th<-6.283185307)
+                while(th<-6.283185307)
+                    th=th+6.283185307;
+                end
+            end
+        end
+    end
+    
+    if(B>6.283185307 || B<-6.283185307)
+        if(B>6.283185307)
+            while(B>6.283185307)
+                B=B-6.283185307;
+            end
+        else
+            if(B<-6.283185307)
+                while(B<-6.283185307)
+                    B=B+6.283185307;
+                end
+            end
+        end
+    end
+        
+    thf=th;
+    Bf=B;
+    rf=r;
+    
+    
+    for p=1:100
+        th=thi+(thf-thi)*(p/100);
+        B=Bi+(Bf-Bi)*(p/100);
+        r=ri+(rf-ri)*(p/100);
+        X=r*cos(B)*cos(th);
+        Y=r*cos(B)*sin(th);
+        Z=-r*sin(B);
+        clf;
+        view(3);
+        axis vis3d;
+        xlim([-175 175]);
+        ylim([-175 175]);
+        zlim([-175 175]);
+        line([0,0],[0,0],[-50,0],'LineWidth',6,'Color','r');
+        line([0,X],[0,Y],[0,Z],'LineWidth',6,'Color','g');
+        grid on;
+        pause(0.01);
+    end
+    
+    thi=thf;
+    Bi=Bf;
+    ri=rf;
+    rd=abs(r);
+    
+    thA=th*(180/pi);
+    BA=B*(180/pi);
+    
+    disp ( [thA BA rd X Y Z ]);
+    
+    disp('Ingrese 1 para ingresar otra posición ');
+    COND=input('Ingrese un valor diferente de 1 para acabar el programa ');
+    
 end
-
-end
-
 end 
