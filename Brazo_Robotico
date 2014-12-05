@@ -1,146 +1,153 @@
 function [] = NR_G
 
-clc
-COND=1;
-th=0;
-r= 1.4573;
-B= 0;
-
-while(COND==1)
-    clc
-    disp ( 'Newton Raphson Generalizado para el brazo robotico');
-    disp ( 'Radio máximo 173.355 centimetros');
-    disp ( 'Radio mínimo 118.110 centimetros');
-    x=input('Ingrese la coordenada X, en cm, que desea ');
-    y=input('Ingrese la coordenada Y, en cm, que desea ');
-    z=input('Ingrese la coordenada Z, en cm, que desea ');
-    disp(' ');
-    i=1;
-    Q=sqrt(x.^2+y.^2+z.^2);
-    t= .1;
-    h1=100;
-    h2=100;
-    h3=100;
-    thi=th;
-    Bi=B;
-    ri=r;
- 
-    while(Q>173.355 || Q<118.11 || Comp(x,y,z)==0)
-        disp(' ');
-        disp('Medida inválida');
-        disp(' ');
-        X = sprintf('El radio solicitado mide %f centimetros',Q);
-        disp(X);
-        disp(' ');
+    clc % Variables are initialized
+    COND=1;
+    th=0;
+    r= 1.4573;
+    B= 0;
+    
+    while(COND==1) %Loop runs while true
+        
+        clc
+        disp ( 'Newton Raphson Generalizado para el brazo robotico'); %User interface is displayed
         disp ( 'Radio máximo 173.355 centimetros');
         disp ( 'Radio mínimo 118.110 centimetros');
-        disp(' ');
-        disp ( 'Theta máximo 104 grados' );
-        disp ( 'Theta mínimo -104 grados' );
-        disp ( 'Beta máximo 30 grados' );
-        disp ( 'Beta mínimo -26 grados' );
-        disp(' ');
         x=input('Ingrese la coordenada X, en cm, que desea ');
         y=input('Ingrese la coordenada Y, en cm, que desea ');
         z=input('Ingrese la coordenada Z, en cm, que desea ');
-        Q=sqrt(x.^2+y.^2+z.^2);
-    end
-    
-    
+        disp(' ');
+        i=1;
+        Q=sqrt(x.^2+y.^2+z.^2); %Radius is calculated
+        t= .1; %Variables initialized
+        h1=100;
+        h2=100;
+        h3=100;
+        thi=th;
+        Bi=B;
+        ri=r;
         
-    while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
-        f1=r*cos(B)*cos(th)-x;
-        f2=r*cos(B)*sin(th)-y;
-        f3=-r*sin(B)-z;
-        a= -r*sin(th)*cos(B);
-        b= -r*cos(th)*sin(B);
-        c=cos(th)*cos(B);
-        d=r*cos(th)*cos(B);
-        e=-r*sin(th)*sin(B);
-        f=sin(th)*cos(B);
-        g=0;
-        h=-r*cos(B);
-        j=-sin(B);
-        H= [a b c -f1;
-        d e f -f2;
-        g h j -f3];
-        R=rref (H);
-        h1=R(1,4);
-        h2=R(2,4);
-        h3=R(3,4);
-        th=h1+th;
-        B=h2+B;
-        r=h3+r;
-        disp ( [ th B r h1 h2 h3 i]);
-        i=i+1;
-    end
+        while(Q>173.355 || Q<118.11 || Comp(x,y,z)==0) %Loop runs while angles or radius invalid
+            
+            disp(' '); %User interface displayed
+            disp('Medida inválida');
+            disp(' ');
+            X = sprintf('El radio solicitado mide %f centimetros',Q);
+            disp(X);
+            disp(' ');
+            disp ( 'Radio máximo 173.355 centimetros');
+            disp ( 'Radio mínimo 118.110 centimetros');
+            disp(' ');
+            disp ( 'Theta máximo 104 grados' );
+            disp ( 'Theta mínimo -104 grados' );
+            disp ( 'Beta máximo 30 grados' );
+            disp ( 'Beta mínimo -26 grados' );
+            disp(' ');
+            x=input('Ingrese la coordenada X, en cm, que desea ');
+            y=input('Ingrese la coordenada Y, en cm, que desea ');
+            z=input('Ingrese la coordenada Z, en cm, que desea ');
+            Q=sqrt(x.^2+y.^2+z.^2); %Radius is recalculated
+            
+        end
+
+        disp ('    theta     Beta     Radio        H1        H2       H3        i'); %Table titles are displayed
         
-    
-    
-    if(th>6.142185307 || th<-6.283185307)
-        if(th>6.283185307)
-            while(th>6.283185307)
-                th=th-6.283185307;
-            end
-        else
-            if(th<-6.283185307)
-                while(th<-6.283185307)
-                    th=th+6.283185307;
+        while (abs(h1)>t || abs(h2)>t || abs(h3)>t) %While changes are greater than t
+            
+            f1=r*cos(B)*cos(th)-x; %X equation
+            f2=r*cos(B)*sin(th)-y; %Y equation
+            f3=-r*sin(B)-z; %Z equation
+            a= -r*sin(th)*cos(B); %X equation derivatives
+            b= -r*cos(th)*sin(B);
+            c=cos(th)*cos(B);
+            d=r*cos(th)*cos(B); %Y equation derivatives
+            e=-r*sin(th)*sin(B);
+            f=sin(th)*cos(B);
+            g=0; %Z equation derivatives
+            h=-r*cos(B);
+            j=-sin(B);
+            H= [a b c -f1; %Matrix is declared
+            d e f -f2;
+            g h j -f3];
+            R=rref (H);
+            h1=R(1,4); %Matrix results are set to their respective variables
+            h2=R(2,4);
+            h3=R(3,4);
+            th=h1+th; %Variables are iterated
+            B=h2+B;
+            r=h3+r;
+            
+            disp ( [ th B r h1 h2 h3 i]); %Result of iteration are displayed
+            i=i+1; %Iteration adds up´one
+        end
+        
+        if(th>6.142185307 || th<-6.283185307) %Normalization of theta
+            if(th>6.283185307)
+                while(th>6.283185307)
+                    th=th-6.283185307;
+                end
+            else
+                if(th<-6.283185307)
+                    while(th<-6.283185307)
+                        th=th+6.283185307;
+                    end
                 end
             end
         end
-    end
-    
-    if(B>6.283185307 || B<-6.283185307)
-        if(B>6.283185307)
-            while(B>6.283185307)
-                B=B-6.283185307;
-            end
-        else
-            if(B<-6.283185307)
-                while(B<-6.283185307)
-                    B=B+6.283185307;
-                end
-            end
-        end
-    end
         
-    thf=th;
-    Bf=B;
-    rf=r;
-    
-    
-    for p=1:100
-        th=thi+(thf-thi)*(p/100);
-        B=Bi+(Bf-Bi)*(p/100);
-        r=ri+(rf-ri)*(p/100);
-        X=r*cos(B)*cos(th);
-        Y=r*cos(B)*sin(th);
-        Z=-r*sin(B);
-        clf;
-        view(3);
-        axis vis3d;
-        xlim([-175 175]);
-        ylim([-175 175]);
-        zlim([-175 175]);
-        line([0,0],[0,0],[-50,0],'LineWidth',6,'Color','r');
-        line([0,X],[0,Y],[0,Z],'LineWidth',6,'Color','g');
-        grid on;
-        pause(0.01);
+        if(B>6.283185307 || B<-6.283185307) %Normalization of beta
+            if(B>6.283185307)
+                while(B>6.283185307)
+                    B=B-6.283185307;
+                end                
+            else               
+                if(B<-6.283185307)
+                    while(B<-6.283185307)
+                        B=B+6.283185307;
+                    end                    
+                end                
+            end           
+        end
+        
+        thf=th; %Final position variables are set
+        Bf=B;
+        rf=r;
+
+        disp ('Coordenadas rectangulares y grados:'); %User interface
+        disp ( '    Theta     Beta      Radio      X         Y          Z');
+
+        for p=1:100 %Loop runs through 100 iterations
+            th=thi+(thf-thi)*(p/100); %Angles are progressively incremented
+            B=Bi+(Bf-Bi)*(p/100);
+            r=ri+(rf-ri)*(p/100);
+            X=r*cos(B)*cos(th); %Rectangular coordinates are set
+            Y=r*cos(B)*sin(th);
+            Z=-r*sin(B);
+            clf; %Graph is cleaned
+            title('Representacion Grafica'); %User interface of the graph
+            xlabel('X');
+            ylabel('Y');
+            zlabel('N');
+            view(3);
+            axis vis3d;
+            xlim([-175 175]);
+            ylim([-175 175]);
+            zlim([-175 175]);
+            line([0,0],[0,0],[-50,0],'LineWidth',6,'Color','r'); %Base line          
+            line([0,X],[0,Y],[0,Z],'LineWidth',6,'Color','g'); %Arm line
+            grid on;
+            pause(0.01); %Interval
+        end
+        
+        thi=thf; %Initial variables are assigned to the value of the last position
+        Bi=Bf;
+        ri=rf;
+        rd=abs(r); %Variables set to the absolute values and degrees
+        thA=th*(180/pi);
+        BA=B*(180/pi);
+
+        disp ( [thA BA rd X Y Z ]);%User interface
+        disp('Ingrese 1 para ingresar otra posición ');
+        COND=input('Ingrese un valor diferente de 1 para acabar el programa ');
+        
     end
-    
-    thi=thf;
-    Bi=Bf;
-    ri=rf;
-    rd=abs(r);
-    
-    thA=th*(180/pi);
-    BA=B*(180/pi);
-    
-    disp ( [thA BA rd X Y Z ]);
-    
-    disp('Ingrese 1 para ingresar otra posición ');
-    COND=input('Ingrese un valor diferente de 1 para acabar el programa ');
-    
-end
 end 
