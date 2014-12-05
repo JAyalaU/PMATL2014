@@ -1,6 +1,5 @@
-function[VAL] = Comp(x,y,z)
-
-    t= .1;
+function[VAL] = Comp(x,y,z)%Function defined with output VAL and inputs x y z
+    t= .1; %Variables are initialized
     h1=100;
     h2=100;
     h3=100;
@@ -9,8 +8,8 @@ function[VAL] = Comp(x,y,z)
     r=1;
     B=0;
     th=0;
-        
-    while (abs(h1)>t || abs(h2)>t || abs(h3)>t)
+    
+    while (abs(h1)>t || abs(h2)>t || abs(h3)>t) %Newton Raphson Method
         f1=r*cos(B)*cos(th)-x;
         f2=r*cos(B)*sin(th)-y;
         f3=-r*sin(B)-z;
@@ -33,10 +32,9 @@ function[VAL] = Comp(x,y,z)
         th=h1+th;
         B=h2+B;
         r=h3+r;
-
     end
-        
-    if(th>6.142185307 || th<-6.283185307)
+    
+    if(th>6.142185307 || th<-6.283185307) %Angles are normalized
         if(th>6.283185307)
             while(th>6.283185307)
                 th=th-6.283185307;
@@ -64,21 +62,21 @@ function[VAL] = Comp(x,y,z)
         end
     end
     
-    if(th<1.81514 && th>-1.81514)
-        CON1=1;
+    if(th<1.81514 && th>-1.81514) %If angle is in valid range
+        CON1=1; %True
     else
-        CON1=0;
+        CON1=0; %False
     end
     
-    if(B<0.523599 && B>-0.453786)
-        CON2=1;
+    if(B<0.523599 && B>-0.453786) %If angle is in valid range
+        CON2=1; %True
     else
-        CON2=0;
+        CON2=0; %False
     end
     
-    if(CON1==0 || CON2==0)
-       VAL=0;
+    if(CON1==0 || CON2==0) %If one of the two is false
+        VAL=0; %Return false
     else
-        VAL=1;
+        VAL=1; %Return true
     end
 end
